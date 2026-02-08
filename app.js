@@ -12,11 +12,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Set persistence supaya auto login
-auth
-  .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-  .catch((err) => console.log(err));
-
 // Enable offline persistence
 db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
   if (err.code === "failed-precondition") console.log("Multiple tabs open");
@@ -56,6 +51,7 @@ function normalizeStatus(s) {
     ? "finished"
     : "reading";
 }
+
 function ratingClass(r) {
   const n = Number(r);
   if (!r || isNaN(n)) return "rate-gray";
@@ -84,6 +80,7 @@ function render() {
   books.forEach((b, i) => {
     const s = normalizeStatus(b.status);
     if (filter !== "all" && s !== filter) return;
+
     list.innerHTML += `
 <div class="book">
   <div class="cover" style="background-image:url('${b.cover || ""}')">
@@ -115,9 +112,11 @@ function openModal() {
   clearForm();
   modal.classList.add("active");
 }
+
 function closeModal() {
   modal.classList.remove("active");
 }
+
 function clearForm() {
   judul.value = "";
   penulis.value = "";
@@ -134,6 +133,7 @@ function clearForm() {
 // ======= Simpan buku =======
 async function saveBook(btn) {
   if (!userId) return alert("Harus login dulu!");
+
   const data = {
     judul: judul.value,
     penulis: penulis.value,
@@ -147,15 +147,19 @@ async function saveBook(btn) {
     rangkuman: rangkuman.value,
     userId,
   };
+
   btn.disabled = true;
   btn.innerText = "Menyimpan...";
+
   try {
-    if (editIndex !== null && books[editIndex])
+    if (editIndex !== null && books[editIndex]) {
       await db
         .collection("books")
         .doc(books[editIndex].id)
         .set(data, { merge: true });
-    else await db.collection("books").add(data);
+    } else {
+      await db.collection("books").add(data);
+    }
     clearForm();
     closeModal();
   } catch (err) {
@@ -183,6 +187,7 @@ function editBook(i) {
   rangkuman.value = b.rangkuman || "";
   modal.classList.add("active");
 }
+
 function removeBook(i) {
   if (!confirm("Hapus buku ini?")) return;
   db.collection("books").doc(books[i].id).delete();
@@ -197,18 +202,21 @@ function openSummary(i) {
     b.rangkuman || "Tidak ada rangkuman.";
   summarySheet.classList.add("active");
 }
+
 function closeSummary() {
   summarySheet.classList.remove("active");
 }
 
-// ======= Auth =======
+// ======= Auth & Logout =======
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
 auth.onAuthStateChanged((user) => {
   if (user) {
     userId = user.uid;
     loginSheet.classList.remove("active");
     mainApp.style.display = "block";
     fab.style.display = "block";
-    loadBooks();
+    loadBooks(); // realtime
   } else {
     userId = null;
     loginSheet.classList.add("active");
@@ -216,6 +224,7 @@ auth.onAuthStateChanged((user) => {
     fab.style.display = "none";
   }
 });
+
 function login() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
@@ -223,6 +232,7 @@ function login() {
     .signInWithEmailAndPassword(email, password)
     .catch((err) => alert("Login gagal: " + err.message));
 }
+
 function signup() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
@@ -231,11 +241,12 @@ function signup() {
     .catch((err) => alert("Signup gagal: " + err.message));
 }
 
-// ======= Logout =======
 function logout() {
   auth
     .signOut()
-    .then(() => console.log("User logout"))
+    .then(() => {
+      alert("Berhasil logout");
+    })
     .catch((err) => alert("Gagal logout: " + err.message));
 }
 
