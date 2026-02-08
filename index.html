@@ -10,7 +10,11 @@
 
 <body>
     <div class="app" id="mainApp" style="display:none;">
-        <header>My Library</header>
+        <header>
+            My Library
+            <button id="logoutBtn" onclick="logout()"
+                style="float:right; font-size:12px; padding:4px 8px; border:none; border-radius:6px; background:#ef4444; color:white; cursor:pointer;">Logout</button>
+        </header>
         <div class="filter">
             <button class="active" onclick="setFilter('all')">Semua</button>
             <button onclick="setFilter('reading')">Membaca</button>
