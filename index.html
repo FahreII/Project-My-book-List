@@ -4,387 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Library</title>
-
-    <style>
-        :root {
-            --bg: #f6f7f9;
-            --card: #ffffff;
-            --text: #111827;
-            --muted: #6b7280;
-            --border: #e5e7eb;
-            --primary: #2563eb;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .app {
-            max-width: 420px;
-            margin: auto;
-            padding: 16px 16px 96px;
-        }
-
-        header {
-            font-size: 22px;
-            font-weight: 800;
-            margin: 8px 0 18px;
-        }
-
-        .filter {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .filter button {
-            flex: 1;
-            padding: 6px 0;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .filter .active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .book {
-            background: var(--card);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-            transition: .2s;
-        }
-
-        .book:active {
-            transform: scale(.97);
-        }
-
-        .cover {
-            height: 210px;
-            background: #e5e7eb;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .cover::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom,
-                    rgba(0, 0, 0, .05),
-                    rgba(0, 0, 0, .25));
-        }
-
-        .rating {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        .rate-purple {
-            background: #e9d5ff;
-            color: #581c87;
-        }
-
-        .rate-red {
-            background: #fee2e2;
-            color: #7f1d1d;
-        }
-
-        .rate-yellow {
-            background: #fef3c7;
-            color: #78350f;
-        }
-
-        .rate-green {
-            background: #dcfce7;
-            color: #14532d;
-        }
-
-        .rate-blue {
-            background: #dbeafe;
-            color: #1e3a8a;
-        }
-
-        .rate-gray {
-            background: #e5e7eb;
-            color: #6b7280;
-        }
-
-        .info {
-            padding: 14px;
-        }
-
-        .title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .title {
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.35;
-        }
-
-        .status-pill {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
-
-        .status-reading {
-            background: #dcfce7;
-            color: #14532d;
-        }
-
-        .status-finished {
-            background: #e5e7eb;
-            color: #374151;
-        }
-
-        .author {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .meta-pages {
-            font-size: 12px;
-            font-weight: 500;
-            margin-top: 6px;
-        }
-
-        .meta-dates {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .read-summary {
-            margin-top: 10px;
-            width: 100%;
-            padding: 9px;
-            border-radius: 12px;
-            border: none;
-            background: #111827;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .buy-link {
-            margin-top: 8px;
-            display: block;
-            text-align: center;
-            padding: 8px;
-            border-radius: 12px;
-            background: var(--primary);
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .actions button {
-            flex: 1;
-            padding: 6px 0;
-            font-size: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: none;
-        }
-
-        .actions .delete {
-            color: #ef4444;
-        }
-
-        .fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            font-size: 32px;
-            border: none;
-            box-shadow: 0 12px 30px rgba(37, 99, 235, .45);
-            cursor: pointer;
-        }
-
-        .modal,
-        .summary-sheet {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .35);
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active,
-        .summary-sheet.active {
-            display: flex;
-        }
-
-        .sheet,
-        .summary-content {
-            background: var(--card);
-            width: 92%;
-            max-width: 420px;
-            border-radius: 22px;
-            padding: 18px;
-            max-height: 90vh;
-            overflow: auto;
-        }
-
-        .summary-sheet {
-            align-items: flex-end;
-        }
-
-        .summary-content {
-            border-radius: 22px 22px 0 0;
-        }
-
-        label {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 10px;
-            display: block;
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            margin-top: 4px;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            font-size: 14px;
-        }
-
-        textarea {
-            height: 90px;
-        }
-
-        .sheet button {
-            margin-top: 14px;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 14px;
-            background: var(--primary);
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .close {
-            background: none;
-            color: var(--muted);
-            cursor: pointer;
-        }
-    </style>
+    <title>My Library - Firebase</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-    <div class="app">
+    <div class="app" id="mainApp" style="display:none;">
         <header>My Library</header>
-
         <div class="filter">
             <button class="active" onclick="setFilter('all')">Semua</button>
             <button onclick="setFilter('reading')">Membaca</button>
             <button onclick="setFilter('finished')">Tamat</button>
         </div>
-
         <div class="grid" id="list"></div>
     </div>
 
-    <button class="fab" onclick="openModal()">+</button>
+    <button class="fab" onclick="openModal()" id="fab" style="display:none;">+</button>
 
+    <!-- Modal Add/Edit -->
     <div class="modal" id="modal">
         <div class="sheet">
             <h2 id="formTitle">Tambah Buku</h2>
-
-            <label>Judul</label>
-            <input id="judul">
-
-            <label>Penulis</label>
-            <input id="penulis">
-
-            <label>Jumlah Halaman</label>
-            <input type="number" id="halaman">
-
-            <label>Cover (URL)</label>
-            <input id="cover">
-
-            <label>Link Pembelian</label>
-            <input id="link">
-
-            <label>Tanggal Mulai</label>
-            <input type="date" id="mulai">
-
-            <label>Tanggal Selesai</label>
-            <input type="date" id="selesai">
-
+            <label>Judul</label><input id="judul">
+            <label>Penulis</label><input id="penulis">
+            <label>Jumlah Halaman</label><input type="number" id="halaman">
+            <label>Cover (URL)</label><input id="cover">
+            <label>Link Pembelian</label><input id="link">
+            <label>Tanggal Mulai</label><input type="date" id="mulai">
+            <label>Tanggal Selesai</label><input type="date" id="selesai">
             <label>Status</label>
             <select id="status">
                 <option value="reading">Masih Membaca</option>
                 <option value="finished">Sudah Tamat</option>
             </select>
-
-            <label>Rating (1–10)</label>
-            <input type="number" min="1" max="10" id="rating">
-
-            <label>Rangkuman</label>
-            <textarea id="rangkuman"></textarea>
-
-            <button onclick="saveBook()">Simpan</button>
-            <button class="close" onclick="closeModal()">Batal</button>
+            <label>Rating (1–10)</label><input type="number" min="1" max="10" id="rating">
+            <label>Rangkuman</label><textarea id="rangkuman"></textarea>
+            <button type="button" id="saveBtn" onclick="saveBook(this)">Simpan</button>
+            <button type="button" class="close" onclick="closeModal()">Batal</button>
         </div>
     </div>
 
+    <!-- Summary -->
     <div class="summary-sheet" id="summarySheet">
         <div class="summary-content">
             <h3 id="summaryTitle"></h3>
@@ -394,170 +54,23 @@
         </div>
     </div>
 
-    <script>
-        let books = JSON.parse(localStorage.getItem('books')) || [];
-        let filter = 'all';
-        let editIndex = null;
+    <!-- Login -->
+    <div class="login-sheet active" id="loginSheet">
+        <div class="login-content">
+            <h2>Login</h2>
+            <label>Email</label><input type="email" id="loginEmail">
+            <label>Password</label><input type="password" id="loginPassword">
+            <button type="button" onclick="login()">Login</button>
+            <button type="button" onclick="signup()">Buat Akun Baru</button>
+        </div>
+    </div>
 
-        const list = document.getElementById('list');
-        const modal = document.getElementById('modal');
-        const summarySheet = document.getElementById('summarySheet');
-        const formTitle = document.getElementById('formTitle');
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-        const judul = document.getElementById('judul');
-        const penulis = document.getElementById('penulis');
-        const halaman = document.getElementById('halaman');
-        const cover = document.getElementById('cover');
-        const link = document.getElementById('link');
-        const mulai = document.getElementById('mulai');
-        const selesai = document.getElementById('selesai');
-        const status = document.getElementById('status');
-        const rating = document.getElementById('rating');
-        const rangkuman = document.getElementById('rangkuman');
-
-        function normalizeStatus(s) {
-            if (!s) return 'reading';
-            const st = s.toString().trim().toLowerCase();
-            return st === 'finished' ? 'finished' : 'reading';
-        }
-
-        function ratingClass(r) {
-            const n = Number(r);
-            if (!r || isNaN(n)) return 'rate-gray';
-            if (n <= 2) return 'rate-purple';
-            if (n <= 4) return 'rate-red';
-            if (n <= 6) return 'rate-yellow';
-            if (n <= 8) return 'rate-green';
-            return 'rate-blue';
-        }
-
-        function setFilter(f) {
-            filter = f;
-            document.querySelectorAll('.filter button').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.filter button[onclick="setFilter('${f}')"]`).classList.add('active');
-            render();
-        }
-
-        function render() {
-            list.innerHTML = '';
-            books.forEach((b, i) => {
-                const s = normalizeStatus(b.status);
-                if (filter !== 'all' && s !== filter) return;
-
-                list.innerHTML += `
-                <div class="book">
-                    <div class="cover" style="background-image:url('${b.cover || ''}')">
-                        <div class="rating ${ratingClass(b.rating)}">${b.rating || '-'}</div>
-                    </div>
-                    <div class="info">
-                        <div class="title-row">
-                            <div class="title">${b.judul}</div>
-                            <div class="status-pill ${s === 'finished' ? 'status-finished' : 'status-reading'}">
-                                ${s === 'finished' ? 'Tamat' : 'Membaca'}
-                            </div>
-                        </div>
-                        <div class="author">${b.penulis}</div>
-                        <div class="meta-pages">${b.halaman ? b.halaman + ' halaman' : 'Halaman belum diisi'}</div>
-                        <div class="meta-dates">${b.mulai || '-'} → ${b.selesai || '-'}</div>
-                        <button class="read-summary" onclick="openSummary(${i})">Baca Rangkuman</button>
-                        ${b.link ? `<a class="buy-link" href="${b.link}" target="_blank">Beli Buku</a>` : ''}
-                        <div class="actions">
-                            <button onclick="editBook(${i})">Edit</button>
-                            <button class="delete" onclick="removeBook(${i})">Hapus</button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function openModal() {
-            editIndex = null;
-            formTitle.innerText = 'Tambah Buku';
-            clearForm();
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-        }
-
-        function clearForm() {
-            judul.value = '';
-            penulis.value = '';
-            halaman.value = '';
-            cover.value = '';
-            link.value = '';
-            mulai.value = '';
-            selesai.value = '';
-            status.value = 'reading';
-            rating.value = '';
-            rangkuman.value = '';
-        }
-
-        function saveBook() {
-            const data = {
-                judul: judul.value,
-                penulis: penulis.value,
-                halaman: Number(halaman.value) || null,
-                cover: cover.value,
-                link: link.value,
-                mulai: mulai.value,
-                selesai: selesai.value,
-                status: normalizeStatus(status.value),
-                rating: Number(rating.value) || null,
-                rangkuman: rangkuman.value
-            };
-
-            if (editIndex !== null) books[editIndex] = data;
-            else books.push(data);
-
-            localStorage.setItem('books', JSON.stringify(books));
-            closeModal();
-            render();
-        }
-
-        function editBook(i) {
-            const b = books[i];
-            editIndex = i;
-            formTitle.innerText = 'Edit Buku';
-
-            judul.value = b.judul;
-            penulis.value = b.penulis;
-            halaman.value = b.halaman || '';
-            cover.value = b.cover;
-            link.value = b.link || '';
-            mulai.value = b.mulai || '';
-            selesai.value = b.selesai || '';
-            status.value = normalizeStatus(b.status);
-            rating.value = b.rating || '';
-            rangkuman.value = b.rangkuman || '';
-
-            modal.classList.add('active');
-        }
-
-        function removeBook(i) {
-            if (confirm('Hapus buku ini?')) {
-                books.splice(i, 1);
-                localStorage.setItem('books', JSON.stringify(books));
-                render();
-            }
-        }
-
-        function openSummary(i) {
-            const b = books[i];
-            document.getElementById('summaryTitle').innerText = b.judul;
-            document.getElementById('summaryAuthor').innerText = b.penulis;
-            document.getElementById('summaryText').innerText = b.rangkuman || 'Tidak ada rangkuman.';
-            summarySheet.classList.add('active');
-        }
-
-        function closeSummary() {
-            summarySheet.classList.remove('active');
-        }
-
-        render();
-    </script>
-
+    <script src="app.js"></script>
 </body>
 
 </html>
